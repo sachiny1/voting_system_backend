@@ -30,11 +30,11 @@ exports.checkForVoteExistOrNot = catchAsyncErrors(async (req, res, next) => {
 exports.storeVote = catchAsyncErrors(async (req, res, next) => {
     const candidate_id = req.params.candidate_id
     const user_id = req.user.user_id
-    const [result] = await db.query(checkVoteExistOrNot,[user_id]);
+    // const [result] = await db.query(checkVoteExistOrNot,[user_id]);
 
-    if(result[0]){
-        return next(new ErrorHander("you already voted", 400));
-    }
+    // if(result[0]){
+    //     return next(new ErrorHander("you already voted", 400));
+    // }
     const insertResult = await db.query(storeVote,[candidate_id,user_id,new Date().toISOString().slice(0, 19).replace("T", " ")]);
 
     if (!insertResult) {
@@ -51,14 +51,18 @@ exports.storeVote = catchAsyncErrors(async (req, res, next) => {
   exports.getAllVotes = catchAsyncErrors(async (req, res, next) => {
 
     const [result] = await db.query(getAllVotes);
-    console.log(result)
+    // console.log(result)
 
     if (!result) {
         return next(new ErrorHander("error in select query", 400));
       }
 
+      const votes_array = result.map((vote)=>vote.total_vote)
+      const total_vote = votes_array.reduce((accum,currentVal)=>accum+ currentVal,0)
+
     res.status(200).json({
       success: true,
+      total_vote:total_vote,
       data:result ,
     });
   });

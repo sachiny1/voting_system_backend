@@ -4,6 +4,7 @@ require("dotenv").config(); // Load environment variables
 // Create MySQL connection
 const db = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
+  port: process.env.DB_PORT || 3306,
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "s2p00y00@gmail.com",
   database: process.env.DB_NAME || "voting_system",
